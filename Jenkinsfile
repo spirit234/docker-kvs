@@ -2,6 +2,7 @@ pipeline {
   agent any
   environment {
     DOCKERHUB_USER = "spirit235"
+    DOCKERHUB_PASS = "KnrnZaiBU5us2iF"
     BUILD_HOST = "root@192.168.10.121"
     PROD_HOST = "root@192.168.10.122"
     BUILD_TIMESTAMP = sh(script: "date +%Y%m%d-%H%M%S", returnStdout: true).trim()
@@ -27,6 +28,7 @@ pipeline {
     }
     stage('Register') {
       steps {
+        sh "docker login -u ${DOCKERHUB_USER} -p ${DOCKERHUB_PASS}"
         sh "docker -H ssh://${BUILD_HOST} tag dockerkvs_web ${DOCKERHUB_USER}/dockerkvs_web:${BUILD_TIMESTAMP}"
         sh "docker -H ssh://${BUILD_HOST} tag dockerkvs_app ${DOCKERHUB_USER}/dockerkvs_app:${BUILD_TIMESTAMP}"
         sh "docker -H ssh://${BUILD_HOST} push ${DOCKERHUB_USER}/dockerkvs_web:${BUILD_TIMESTAMP}"
